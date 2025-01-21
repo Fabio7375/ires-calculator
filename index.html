@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore IRES Premiale 2025 - Corretto</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success-bg: #f0fdf4;
+            --success-text: #15803d;
+            --info-bg: #fff7ed;
+            --info-text: #9a3412;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .input-grid {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .input-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #374151;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .results {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .alert {
+            background-color: #f3f4f6;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .info-box {
+            background-color: var(--info-bg);
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .success-box {
+            background-color: var(--success-bg);
+            padding: 16px;
+            border-radius: 4px;
+        }
+
+        .results-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .result-item {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .detail-item {
+            margin-left: 20px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .savings {
+            color: var(--success-text);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Calcolatore IRES Premiale 2025</h1>
+            <p class="subtitle">Calcolo secondo l'articolo 1 comma 436 della legge 207/2024</p>
+        </div>
+
+        <div class="input-grid">
+            <div class="input-group">
+                <label class="input-label">Utile 2023 (€)</label>
+                <input type="number" id="utile2023" class="input-field" placeholder="Inserisci l'utile 2023">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Utile 2024 (€)</label>
+                <input type="number" id="utile2024" class="input-field" placeholder="Inserisci l'utile 2024">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Dipendenti medi 2024</label>
+                <input type="number" id="dipendenti2024" class="input-field" placeholder="Numero dipendenti 2024">
+            </div>
+        </div>
+
+        <button onclick="calculateIRES()" class="button">Calcola IRES</button>
+
+        <div id="results" class="results">
+            <div class="alert">
+                <h3 class="results-title">Requisiti per l'IRES Premiale:</h3>
+                <div class="result-item">
+                    1. Accantonamento minimo a riserva: <span id="accantonamento"></span>
+                    <div class="detail-item">
+                        (80% dell'utile 2024)
+                    </div>
+                </div>
+                <div class="result-item">
+                    2. Investimento minimo richiesto: <span id="investimento"></span>
+                    <div id="investimentoDettagli" class="detail-item"></div>
+                </div>
+                <div class="result-item">
+                    3. Nuove assunzioni minime nel 2025: <span id="assunzioni"></span>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h3 class="results-title">Calcolo del risparmio:</h3>
+                <div class="result-item">
+                    IRES ordinaria (24%): <span id="iresOrdinaria"></span>
+                </div>
+                <div class="result-item">
+                    IRES premiale (20%): <span id="iresPremiale"></span>
+                </div>
+                <div class="result-item savings">
+                    Risparmio fiscale: <span id="risparmio"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(value) {
+            return '€' + value.toLocaleString('it-IT', {maximumFractionDigits: 0});
+        }
+
+        function calculateIRES() {
+            // Recupera i valori input
+            const utile2023 = parseFloat(document.getElementById('utile2023').value) || 0;
+            const utile2024 = parseFloat(document.getElementById('utile2024').value) || 0;
+            const dipendenti2024 = parseFloat(document.getElementById('dipendenti2024').value) || 0;
+
+            // Calcolo accantonamento minimo (80% dell'utile 2024)
+            const accantonamentoRiserva = utile2024 * 0.8;
+
+            // Calcolo investimenti minimi
+            const investimentiMinimi30 = accantonamentoRiserva * 0.3;  // 30% dell'accantonamento
+            const investimentiMinimi24 = utile2023 * 0.24;  // 24% dell'utile 2023
+            
+            // L'investimento richiesto è il maggiore tra:
+            // - 30% dell'accantonamento
+            // - 24% dell'utile 2023
+            // - 20.000 euro (minimo assoluto)
+            const investimentoRichiesto = Math.max(investimentiMinimi30, investimentiMinimi24, 20000);
+            
+            // Calcolo IRES
+            const iresOrdinaria = utile2024 * 0.24;
+            const iresPremiale = utile2024 * 0.20;
+            const risparmioFiscale = iresOrdinaria - iresPremiale;
+            
+            // Calcolo assunzioni minime (1% dei dipendenti 2024, minimo 1)
+            const assunzioniMinime = Math.max(1, Math.ceil(dipendenti2024 * 0.01));
+
+            // Aggiorna i risultati
+            document.getElementById('accantonamento').textContent = formatCurrency(accantonamentoRiserva);
+            document.getElementById('investimento').textContent = formatCurrency(investimentoRichiesto);
+            
+            // Mostra i dettagli del calcolo dell'investimento
+            let dettagliInvestimento = [
+                `30% dell'accantonamento: ${formatCurrency(investimentiMinimi30)}`,
+                `24% dell'utile 2023: ${formatCurrency(investimentiMinimi24)}`,
+                `Minimo assoluto: €20.000`
+            ].join('<br>');
+            document.getElementById('investimentoDettagli').innerHTML = 
+                `Il valore maggiore tra:<br>${dettagliInvestimento}`;
+
+            document.getElementById('assunzioni').textContent = assunzioniMinime;
+            document.getElementById('iresOrdinaria').textContent = formatCurrency(iresOrdinaria);
+            document.getElementById('iresPremiale').textContent = formatCurrency(iresPremiale);
+            document.getElementById('risparmio').textContent = formatCurrency(risparmioFiscale);
+
+            // Mostra i risultati
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
